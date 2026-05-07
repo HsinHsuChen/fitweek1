@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Week 1 訓練課表｜增肌減脂</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #f5f2ed;
+  --surface: #ffffff;
+  --surface2: #f0ece5;
+  --ink: #1a1612;
+  --ink2: #5a5148;
+  --ink3: #9c8f83;
+  --red: #c0392b;
+  --orange: #d4621a;
+  --green: #2d7a4f;
+  --blue: #1e5799;
+  --gold: #b8860b;
+  --border: #ddd6cc;
+  --day1: #c0392b;
+  --day2: #1e5799;
+  --day3: #2d7a4f;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Noto Sans TC', sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* Noise texture overlay */
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 999;
+}
+
+.page { max-width: 900px; margin: 0 auto; padding: 48px 24px 80px; }
+
+/* ── HEADER ── */
+.header {
+  border-bottom: 3px solid var(--ink);
+  padding-bottom: 28px;
+  margin-bottom: 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  animation: fadeIn 0.6s ease both;
+}
+
+.header-left {}
+
+.week-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--ink3);
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+h1 {
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 900;
+  letter-spacing: -2px;
+  line-height: 1;
+  color: var(--ink);
+}
+
+h1 em {
+  font-style: normal;
+  color: var(--red);
+  border-bottom: 4px solid var(--red);
+}
+
+.header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.tag {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  padding: 4px 10px;
+  border: 1.5px solid currentColor;
+  border-radius: 2px;
+  text-transform: uppercase;
+}
+
+.tag-red { color: var(--red); }
+.tag-blue { color: var(--blue); }
+.tag-green { color: var(--green); }
+
+/* ── PRINCIPLE STRIP ── */
+.principles {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  margin-bottom: 40px;
+  animation: fadeIn 0.6s 0.1s ease both;
+}
+
+.principle {
+  background: var(--ink);
+  color: var(--bg);
+  padding: 18px 16px;
+  position: relative;
+}
+
+.principle:first-child { border-radius: 4px 0 0 4px; }
+.principle:last-child { border-radius: 0 4px 4px 0; }
+
+.principle-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 28px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.15);
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.principle-title {
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.principle-desc {
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.5;
+}
+
+/* ── TWO-COL LAYOUT ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media(max-width:640px){
+  .two-col { grid-template-columns: 1fr; }
+  .principles { grid-template-columns: 1fr; }
+  .principle:first-child { border-radius: 4px 4px 0 0; }
+  .principle:last-child { border-radius: 0 0 4px 4px; }
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  animation: fadeIn 0.6s ease both;
+}
+
+.card-header {
+  padding: 14px 18px;
+  border-bottom: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card-icon { font-size: 16px; }
+
+.card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--ink2);
+  font-family: 'DM Mono', monospace;
+}
+
+.card-body { padding: 18px; }
+
+/* ── RPE TABLE ── */
+.rpe-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--surface2);
+}
+.rpe-row:last-child { border-bottom: none; }
+
+.rpe-badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 18px;
+  font-weight: 500;
+  min-width: 32px;
+  color: var(--ink);
+}
+
+.rpe-bar-wrap { flex: 1; height: 6px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.rpe-bar { height: 100%; border-radius: 3px; background: var(--red); }
+
+.rpe-desc { font-size: 12px; color: var(--ink2); min-width: 100px; }
+
+.rpe-target {
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'DM Mono', monospace;
+  color: var(--red);
+  border: 1.5px solid var(--red);
+  padding: 2px 7px;
+  border-radius: 2px;
+}
+
+/* ── REST TABLE ── */
+.rest-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--surface2);
+}
+.rest-item:last-child { border-bottom: none; }
+.rest-type { font-size: 13px; color: var(--ink2); }
+.rest-time { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; color: var(--ink); }
+
+/* ── TIMING STRIP ── */
+.timing-strip {
+  display: flex;
+  gap: 0;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 16px;
+  animation: fadeIn 0.6s 0.2s ease both;
+}
+
+.timing-item {
+  flex: 1;
+  padding: 16px 12px;
+  text-align: center;
+  border-right: 1.5px solid var(--border);
+  background: var(--surface);
+}
+.timing-item:last-child { border-right: none; background: var(--ink); color: var(--bg); }
+
+.timing-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 22px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.timing-label {
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  opacity: 0.6;
+}
+
+/* ── WARMUP ── */
+.warmup-section {
+  margin-bottom: 40px;
+  animation: fadeIn 0.6s 0.25s ease both;
+}
+
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.warmup-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 12px;
+}
+
+@media(max-width:640px){ .warmup-grid { grid-template-columns: 1fr; } }
+
+.warmup-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.warmup-title {
+  font-size: 12px;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--ink);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.warmup-list { list-style: none; }
+
+.warmup-list li {
+  font-size: 12px;
+  color: var(--ink2);
+  padding: 4px 0;
+  border-bottom: 1px dashed var(--border);
+  display: flex;
+  justify-content: space-between;
+}
+
+.warmup-list li:last-child { border-bottom: none; }
+
+.warmup-qty {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink3);
+}
+
+/* ── DAY SECTIONS ── */
+.day-section {
+  margin-bottom: 40px;
+  animation: fadeIn 0.6s ease both;
+}
+
+.day-header {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 16px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1.5px solid var(--border);
+}
+
+.day-num {
+  padding: 16px 20px;
+  font-family: 'DM Mono', monospace;
+  font-size: 28px;
+  font-weight: 500;
+  color: white;
+  line-height: 1;
+  min-width: 80px;
+  text-align: center;
+}
+
+.day-info {
+  padding: 12px 20px;
+  flex: 1;
+  background: var(--surface);
+}
+
+.day-name {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 3px;
+}
+
+.day-desc {
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 1px;
+}
+
+.day-badge {
+  padding: 12px 18px;
+  background: var(--surface);
+  border-left: 1.5px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.day-badge-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.day-badge-label {
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+/* ── EXERCISE TABLE ── */
+.ex-table { width: 100%; border-collapse: collapse; }
+
+.ex-table th {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1.5px solid var(--border);
+  background: var(--surface2);
+}
+
+.ex-table td {
+  padding: 12px;
+  border-bottom: 1px solid var(--surface2);
+  vertical-align: top;
+}
+
+.ex-table tr:last-child td { border-bottom: none; }
+
+.ex-table tr:hover td { background: #faf8f5; }
+
+.ex-num {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink3);
+  white-space: nowrap;
+}
+
+.ex-name {
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+
+.ex-note {
+  font-size: 11px;
+  color: var(--ink3);
+}
+
+.ex-sets {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.ex-rpe {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 3px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.rpe-high { background: #fde8e6; color: var(--red); }
+.rpe-med  { background: #e8f0fd; color: var(--blue); }
+.rpe-low  { background: #e8f5ed; color: var(--green); }
+
+.warn-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  padding: 2px 7px;
+  background: #fff3e0;
+  border: 1px solid #f0a060;
+  border-radius: 3px;
+  color: var(--orange);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.weight-chip {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 7px;
+  background: var(--surface2);
+  border-radius: 3px;
+  color: var(--ink2);
+  margin-top: 4px;
+}
+
+/* ── CARDIO STRIP ── */
+.cardio-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface2);
+  border: 1.5px dashed var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-top: 12px;
+}
+
+.cardio-icon { font-size: 20px; }
+
+.cardio-text {
+  flex: 1;
+  font-size: 13px;
+  color: var(--ink2);
+}
+
+.cardio-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--green);
+}
+
+/* ── DIET SECTION ── */
+.diet-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+@media(max-width:500px){ .diet-grid { grid-template-columns: 1fr; } }
+
+.diet-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.diet-card-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 12px;
+  font-family: 'DM Mono', monospace;
+}
+
+.food-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--surface2);
+  font-size: 13px;
+}
+.food-item:last-child { border-bottom: none; }
+.food-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+
+/* ── BEER TABLE ── */
+.beer-table { width: 100%; border-collapse: collapse; }
+.beer-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--surface2);
+  font-size: 13px;
+}
+.beer-table td:first-child { color: var(--ink2); width: 40%; }
+.beer-table td:last-child { font-weight: 600; }
+.beer-table tr:last-child td { border-bottom: none; }
+
+/* ── KPI SECTION ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+@media(max-width:640px){ .kpi-grid { grid-template-columns: repeat(2,1fr); } }
+
+.kpi-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 12px;
+  text-align: center;
+}
+
+.kpi-val {
+  font-family: 'DM Mono', monospace;
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 4px;
+}
+
+.kpi-label {
+  font-size: 10px;
+  color: var(--ink3);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* ── GOAL GRID ── */
+.goal-list { display: flex; flex-direction: column; gap: 8px; }
+
+.goal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--surface2);
+  border-radius: 6px;
+  font-size: 13px;
+}
+
+.goal-label { color: var(--ink2); }
+.goal-val { font-weight: 700; font-family: 'DM Mono', monospace; font-size: 13px; }
+
+/* ── MINDSET ── */
+.mindset-box {
+  background: var(--ink);
+  color: var(--bg);
+  border-radius: 8px;
+  padding: 28px;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+.mindset-box::before {
+  content: '心態';
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 80px;
+  font-weight: 900;
+  color: rgba(255,255,255,0.04);
+  letter-spacing: -3px;
+}
+
+.mindset-vs {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.mindset-col { flex: 1; min-width: 180px; }
+
+.mindset-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-bottom: 8px;
+  opacity: 0.5;
+}
+
+.mindset-bad {
+  font-size: 14px;
+  color: rgba(255,255,255,0.4);
+  text-decoration: line-through;
+  margin-bottom: 4px;
+}
+
+.mindset-good {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+
+.mindset-arrow {
+  font-size: 28px;
+  color: rgba(255,255,255,0.2);
+}
+
+/* ── REPORT CHECKLIST ── */
+.report-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+
+.report-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface2);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--ink2);
+  cursor: default;
+  transition: background 0.2s;
+}
+
+.report-item:hover { background: #e8e2d8; }
+
+.report-check {
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--border);
+  border-radius: 4px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: transparent;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.report-check.done {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+
+/* ── FOOTER ── */
+.footer {
+  margin-top: 60px;
+  padding-top: 24px;
+  border-top: 1.5px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.footer-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 1.5px;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn {
+  from { opacity:0; transform: translateY(16px); }
+  to   { opacity:1; transform: translateY(0); }
+}
+
+.d1 { animation-delay: 0.1s; }
+.d2 { animation-delay: 0.2s; }
+.d3 { animation-delay: 0.3s; }
+.d4 { animation-delay: 0.4s; }
+.d5 { animation-delay: 0.5s; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══ HEADER ══ -->
+<div class="header">
+  <div class="header-left">
+    <div class="week-label">2026 · Fitness Program</div>
+    <h1>Week <em>01</em><br/>訓練課表</h1>
+  </div>
+  <div class="header-right">
+    <span class="tag tag-red">增肌減脂</span>
+    <span class="tag tag-blue">居家訓練</span>
+    <span class="tag tag-green">上半身視覺優先</span>
+  </div>
+</div>
+
+<!-- ══ PRINCIPLE STRIP ══ -->
+<div class="principles">
+  <div class="principle">
+    <div class="principle-num">01</div>
+    <div class="principle-title">上半身視覺優先</div>
+    <div class="principle-desc">肩寬、胸型、背寬<br/>快速出線條</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">02</div>
+    <div class="principle-title">關節友善設計</div>
+    <div class="principle-desc">所有動作保護<br/>膝蓋與手腕</div>
+  </div>
+  <div class="principle">
+    <div class="principle-num">03</div>
+    <div class="principle-title">中高密度訓練</div>
+    <div class="principle-desc">RPE 7～8<br/>不要每組爆死</div>
+  </div>
+</div>
+
+<!-- ══ TIMING ══ -->
+<div class="timing-strip">
+  <div class="timing-item">
+    <span class="timing-num">8–10</span>
+    <div class="timing-label">暖身 min</div>
+  </div>
+  <div class="timing-item">
+    <span class="timing-num">40</span>
+    <div class="timing-label">重訓 min</div>
+  </div>
+  <div class="timing-item">
+    <span class="timing-num">10–15</span>
+    <div class="timing-label">有氧 min</div>
+  </div>
+  <div class="timing-item">
+    <span class="timing-num">~60</span>
+    <div class="timing-label">總計 min</div>
+  </div>
+</div>
+
+<!-- ══ RPE + REST ══ -->
+<div class="two-col d2">
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">📊</span>
+      <span class="card-title">強度標準 RPE</span>
+    </div>
+    <div class="card-body">
+      <div class="rpe-row">
+        <span class="rpe-badge">6</span>
+        <div class="rpe-bar-wrap"><div class="rpe-bar" style="width:50%;opacity:.4"></div></div>
+        <span class="rpe-desc">還能多做 4 下</span>
+      </div>
+      <div class="rpe-row">
+        <span class="rpe-badge">7</span>
+        <div class="rpe-bar-wrap"><div class="rpe-bar" style="width:70%;opacity:.7"></div></div>
+        <span class="rpe-desc">還能多做 3 下</span>
+        <span class="rpe-target">目標</span>
+      </div>
+      <div class="rpe-row">
+        <span class="rpe-badge">8</span>
+        <div class="rpe-bar-wrap"><div class="rpe-bar" style="width:85%"></div></div>
+        <span class="rpe-desc">還能多做 2 下</span>
+        <span class="rpe-target">目標</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <span class="card-icon">⏱️</span>
+      <span class="card-title">組間休息時間</span>
+    </div>
+    <div class="card-body">
+      <div class="rest-item">
+        <span class="rest-type">大動作（胸推、硬舉、深蹲）</span>
+        <span class="rest-time">75–90 秒</span>
+      </div>
+      <div class="rest-item">
+        <span class="rest-type">小肌群（二頭、側平舉）</span>
+        <span class="rest-time">45–60 秒</span>
+      </div>
+      <div class="rest-item">
+        <span class="rest-type">核心動作</span>
+        <span class="rest-time">30–45 秒</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ WARMUP ══ -->
+<div class="warmup-section d3" style="margin-top:16px;">
+  <div class="section-label">固定暖身（每次都做）</div>
+  <div class="warmup-grid">
+    <div class="warmup-card">
+      <div class="warmup-title">🤲 手腕暖身</div>
+      <ul class="warmup-list">
+        <li>手腕繞圈 <span class="warmup-qty">×20</span></li>
+        <li>前臂伸展 <span class="warmup-qty">30 秒</span></li>
+        <li>張開握拳 <span class="warmup-qty">×20</span></li>
+      </ul>
+    </div>
+    <div class="warmup-card">
+      <div class="warmup-title">🏋️ 肩關節啟動</div>
+      <ul class="warmup-list">
+        <li>彈力帶拉伸<br/>Band Pull Apart <span class="warmup-qty">2×15</span></li>
+      </ul>
+    </div>
+    <div class="warmup-card">
+      <div class="warmup-title">🍑 臀部啟動</div>
+      <ul class="warmup-list">
+        <li>臀橋 <span class="warmup-qty">2×15</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DAY 1 ══ -->
+<div class="day-section d3">
+  <div class="section-label">訓練日</div>
+  <div class="day-header">
+    <div class="day-num" style="background:var(--day1);">D1</div>
+    <div class="day-info">
+      <div class="day-name">胸 ＋ 肩</div>
+      <div class="day-desc">視覺優先日 · 上半身寬度與厚度</div>
+    </div>
+    <div class="day-badge">
+      <div class="day-badge-num">5</div>
+      <div class="day-badge-label">個動作</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table class="ex-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>動作</th>
+          <th>組×次</th>
+          <th>強度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ex-num">01</td>
+          <td>
+            <div class="ex-name">啞鈴上斜胸推</div>
+            <div class="ex-note">手腕中立 · 不過度下放 · 上胸發力</div>
+            <span class="warn-chip">⚠️ 手腕保持中立</span>
+            <span class="weight-chip">6–8 kg/手</span>
+          </td>
+          <td class="ex-sets">4 × 8–12</td>
+          <td><span class="ex-rpe rpe-high">RPE 7–8</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">02</td>
+          <td>
+            <div class="ex-name">啞鈴肩推</div>
+            <div class="ex-note">不聳肩 · 不過度後仰</div>
+            <span class="weight-chip">6–8 kg/手</span>
+          </td>
+          <td class="ex-sets">4 × 8–10</td>
+          <td><span class="ex-rpe rpe-high">RPE 7–8</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">03</td>
+          <td>
+            <div class="ex-name">啞鈴側平舉</div>
+            <div class="ex-note">肩寬視覺關鍵動作，輕重量做足感覺</div>
+            <span class="weight-chip">3–5 kg/手</span>
+          </td>
+          <td class="ex-sets">4 × 12–15</td>
+          <td><span class="ex-rpe rpe-med">RPE 7</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">04</td>
+          <td>
+            <div class="ex-name">啞鈴地板胸推</div>
+            <div class="ex-note">手腕安全 · 肩膀壓力低 · 替代臥推</div>
+            <span class="warn-chip">✅ 手腕友善</span>
+          </td>
+          <td class="ex-sets">3 × 10–12</td>
+          <td><span class="ex-rpe rpe-med">RPE 7</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">05</td>
+          <td>
+            <div class="ex-name">核心：Dead Bug</div>
+            <div class="ex-note">下背貼地 · 核心全程收緊</div>
+          </td>
+          <td class="ex-sets">3 × 12</td>
+          <td><span class="ex-rpe rpe-low">核心</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="cardio-strip">
+      <span class="cardio-icon">🚶</span>
+      <div class="cardio-text">收尾有氧：原地踏步，維持微喘、能講話的強度</div>
+      <span class="cardio-time">10 min</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DAY 2 ══ -->
+<div class="day-section d4">
+  <div class="day-header">
+    <div class="day-num" style="background:var(--day2);">D2</div>
+    <div class="day-info">
+      <div class="day-name">背 ＋ 核心</div>
+      <div class="day-desc">背寬訓練 · 後鏈強化 · 二頭</div>
+    </div>
+    <div class="day-badge">
+      <div class="day-badge-num">5</div>
+      <div class="day-badge-label">個動作</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table class="ex-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>動作</th>
+          <th>組×次</th>
+          <th>強度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ex-num">01</td>
+          <td>
+            <div class="ex-name">單手啞鈴划船</div>
+            <div class="ex-note">背出力 · 不聳肩 · 主力動作</div>
+            <span class="weight-chip">8–12 kg/手</span>
+          </td>
+          <td class="ex-sets">4 × 10–12</td>
+          <td><span class="ex-rpe rpe-high">RPE 7–8</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">02</td>
+          <td>
+            <div class="ex-name">啞鈴羅馬尼亞硬舉</div>
+            <div class="ex-note">練臀 · 腿後側 · 保護膝蓋 · 改善久坐</div>
+            <span class="warn-chip">✅ 膝蓋友善</span>
+            <span class="weight-chip">8–10 kg/手</span>
+          </td>
+          <td class="ex-sets">4 × 10</td>
+          <td><span class="ex-rpe rpe-high">RPE 7–8</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">03</td>
+          <td>
+            <div class="ex-name">彈力帶下拉模擬</div>
+            <div class="ex-note">目標背寬，感受背闊肌收縮</div>
+          </td>
+          <td class="ex-sets">3 × 12–15</td>
+          <td><span class="ex-rpe rpe-med">RPE 7</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">04</td>
+          <td>
+            <div class="ex-name">Hammer Curl 中立彎舉</div>
+            <div class="ex-note">拇指朝上握法，手腕壓力最小</div>
+            <span class="warn-chip">✅ 手腕友善</span>
+          </td>
+          <td class="ex-sets">3 × 10–12</td>
+          <td><span class="ex-rpe rpe-med">RPE 7</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">05</td>
+          <td>
+            <div class="ex-name">前臂平板撐</div>
+            <div class="ex-note">前臂著地，手腕無壓力</div>
+            <span class="warn-chip">✅ 手腕友善</span>
+          </td>
+          <td class="ex-sets">3 × 30–45 秒</td>
+          <td><span class="ex-rpe rpe-low">核心</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="cardio-strip">
+      <span class="cardio-icon">🚶</span>
+      <div class="cardio-text">收尾有氧：原地快走</div>
+      <span class="cardio-time">10 min</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DAY 3 ══ -->
+<div class="day-section d5">
+  <div class="day-header">
+    <div class="day-num" style="background:var(--day3);">D3</div>
+    <div class="day-info">
+      <div class="day-name">腿 ＋ 全身代謝</div>
+      <div class="day-desc">高品質下半身 · 不是炸腿日</div>
+    </div>
+    <div class="day-badge">
+      <div class="day-badge-num">5</div>
+      <div class="day-badge-label">個動作</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table class="ex-table">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>動作</th>
+          <th>組×次</th>
+          <th>強度</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="ex-num">01</td>
+          <td>
+            <div class="ex-name">箱式深蹲（坐椅深蹲）</div>
+            <div class="ex-note">膝蓋對腳尖 · 不內夾 · 可抱啞鈴</div>
+            <span class="warn-chip">⚠️ 膝蓋方向注意</span>
+          </td>
+          <td class="ex-sets">4 × 10–12</td>
+          <td><span class="ex-rpe rpe-high">RPE 7–8</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">02</td>
+          <td>
+            <div class="ex-name">臀橋（加重）</div>
+            <div class="ex-note">可在腹部放啞鈴增加重量，主練臀大肌</div>
+            <span class="warn-chip">✅ 膝蓋友善</span>
+          </td>
+          <td class="ex-sets">4 × 15</td>
+          <td><span class="ex-rpe rpe-med">RPE 7</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">03</td>
+          <td>
+            <div class="ex-name">保加利亞分腿蹲（小幅度）</div>
+            <div class="ex-note">不用蹲太深，控制動作品質優先</div>
+            <span class="warn-chip">⚠️ 幅度控制</span>
+          </td>
+          <td class="ex-sets">3 × 8–10</td>
+          <td><span class="ex-rpe rpe-med">RPE 7</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">04</td>
+          <td>
+            <div class="ex-name">啞鈴推舉（全身代謝）</div>
+            <div class="ex-note">輕重量，帶心肺 · 全身燃脂</div>
+          </td>
+          <td class="ex-sets">3 × 10</td>
+          <td><span class="ex-rpe rpe-med">RPE 6–7</span></td>
+        </tr>
+        <tr>
+          <td class="ex-num">05</td>
+          <td>
+            <div class="ex-name">核心：Bird Dog</div>
+            <div class="ex-note">脊椎中立 · 對側手腳延伸 · 核心抗旋轉</div>
+            <span class="warn-chip">✅ 手腕友善</span>
+          </td>
+          <td class="ex-sets">3 × 每側 10</td>
+          <td><span class="ex-rpe rpe-low">核心</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="cardio-strip">
+      <span class="cardio-icon">🚶</span>
+      <div class="cardio-text">收尾有氧：原地踏步或快走</div>
+      <span class="cardio-time">10–15 min</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══ DIET ══ -->
+<div class="section-label d4" style="margin-top:40px;">飲食策略</div>
+
+<div class="diet-grid d4">
+  <div class="diet-card">
+    <div class="diet-card-title">🏪 超商運動後補給</div>
+    <div class="food-item"><div class="food-dot" style="background:#c0392b"></div>雞胸肉（蛋白質來源）</div>
+    <div class="food-item"><div class="food-dot" style="background:#d4621a"></div>茶葉蛋（方便蛋白）</div>
+    <div class="food-item"><div class="food-dot" style="background:#2d7a4f"></div>無糖豆漿（蛋白 + 碳水）</div>
+  </div>
+  <div class="diet-card">
+    <div class="diet-card-title">🏠 家裡備用版</div>
+    <div class="food-item"><div class="food-dot" style="background:#c0392b"></div>水煮蛋</div>
+    <div class="food-item"><div class="food-dot" style="background:#d4621a"></div>豆腐</div>
+    <div class="food-item"><div class="food-dot" style="background:#2d7a4f"></div>香蕉（訓練後快速碳水）</div>
+  </div>
+</div>
+
+<div class="card d4">
+  <div class="card-header">
+    <span class="card-icon">🍺</span>
+    <span class="card-title">啤酒規則</span>
+  </div>
+  <div class="card-body">
+    <table class="beer-table">
+      <tr><td>每週頻率</td><td>≤ 2 次</td></tr>
+      <tr><td>每次上限</td><td>1,000 ml</td></tr>
+      <tr><td>禁止搭配</td><td>❌ 餅乾、炸物、宵夜</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══ MINDSET ══ -->
+<div class="mindset-box d4" style="margin-top:16px;">
+  <div class="mindset-vs">
+    <div class="mindset-col">
+      <div class="mindset-label">❌ 錯誤觀念</div>
+      <div class="mindset-bad">今天有沒有完美</div>
+    </div>
+    <div class="mindset-arrow">→</div>
+    <div class="mindset-col">
+      <div class="mindset-label">✅ 正確觀念</div>
+      <div class="mindset-good">有沒有比上週更穩定</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ KPI ══ -->
+<div class="section-label d5" style="margin-top:40px;">Week 1 KPI 目標</div>
+
+<div class="kpi-grid d5">
+  <div class="kpi-card">
+    <span class="kpi-val">3次</span>
+    <div class="kpi-label">完成訓練</div>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-val">≥130g</span>
+    <div class="kpi-label">蛋白質/天</div>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-val">≤2次</span>
+    <div class="kpi-label">啤酒</div>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-val">↓</span>
+    <div class="kpi-label">宵夜炸物</div>
+  </div>
+  <div class="kpi-card">
+    <span class="kpi-val">固定</span>
+    <div class="kpi-label">睡眠時間</div>
+  </div>
+</div>
+
+<!-- ══ 8-WEEK GOAL ══ -->
+<div class="card d5">
+  <div class="card-header">
+    <span class="card-icon">🏆</span>
+    <span class="card-title">8 週目標（第一階段）</span>
+  </div>
+  <div class="card-body">
+    <div class="goal-list">
+      <div class="goal-item"><span class="goal-label">體重</span><span class="goal-val">80 → 75–77 kg</span></div>
+      <div class="goal-item"><span class="goal-label">肩線</span><span class="goal-val">開始出現</span></div>
+      <div class="goal-item"><span class="goal-label">胸型</span><span class="goal-val">更立體</span></div>
+      <div class="goal-item"><span class="goal-label">腰圍</span><span class="goal-val">明顯下降</span></div>
+      <div class="goal-item"><span class="goal-label">體態</span><span class="goal-val">看起來更壯</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REPORT ══ -->
+<div class="section-label d5" style="margin-top:24px;">Week 1 結束後回報清單（點擊打勾）</div>
+
+<div class="card d5">
+  <div class="card-body">
+    <ul class="report-list">
+      <li class="report-item"><div class="report-check" onclick="toggleCheck(this)">✓</div>三次訓練是否全部完成？</li>
+      <li class="report-item"><div class="report-check" onclick="toggleCheck(this)">✓</div>哪個動作最吃力？</li>
+      <li class="report-item"><div class="report-check" onclick="toggleCheck(this)">✓</div>手腕是否有不舒服？</li>
+      <li class="report-item"><div class="report-check" onclick="toggleCheck(this)">✓</div>有沒有哪天飲食失控？</li>
+      <li class="report-item"><div class="report-check" onclick="toggleCheck(this)">✓</div>體重變化記錄</li>
+      <li class="report-item"><div class="report-check" onclick="toggleCheck(this)">✓</div>胃食道逆流有沒有改善？</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══ FOOTER ══ -->
+<div class="footer">
+  <span class="footer-label">WEEK 01 · 增肌減脂 · 居家訓練</span>
+  <span class="footer-label">完成後回報 → Week 2 調整</span>
+</div>
+
+</div>
+
+<script>
+function toggleCheck(el) {
+  el.classList.toggle('done');
+}
+</script>
+</body>
+</html>
