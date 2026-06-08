@@ -1588,7 +1588,7 @@ h1 em {
     <div class="modal-drag"></div>
     <div class="modal-head">
       <div class="modal-title">節拍器</div>
-      <button class="modal-close" onclick="stopMetro();closeModal('metroOverlay')">✕</button>
+      <button class="modal-close" onclick="closeModal('metroOverlay')">✕</button>
     </div>
     <div class="metro-body">
       <div class="metro-display">
@@ -1749,18 +1749,28 @@ function toggleMetro() {
 
 function openMetro() {
   buildDots();
+  // 重新開啟時同步 UI 狀態（若節拍器仍在跑）
+  if (metroRunning) {
+    document.getElementById('metroBtn').textContent = '■ 停止';
+    document.getElementById('metroBtn').className   = 'metro-start stop-state';
+    document.getElementById('metroCount').textContent = metroBeat || '—';
+  }
   document.getElementById('metroOverlay').classList.add('open');
 }
 
 // ══ MODAL HELPERS ══
 function closeModal(id) {
   document.getElementById(id).classList.remove('open');
-  if (id === 'metroOverlay') stopMetro();
+  // 節拍器關閉彈窗或縮小視窗時【不停止】
+  // 只有關掉網頁才會停（見 beforeunload）
 }
 
 function closeOnOverlay(e, id) {
   if (e.target.id === id) closeModal(id);
 }
+
+// 只在真正關閉網頁時才停止節拍器
+window.addEventListener('beforeunload', () => stopMetro());
 </script>
 </body>
 </html>
