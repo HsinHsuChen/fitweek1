@@ -751,6 +751,310 @@ h1 em {
 .d3 { animation-delay: 0.3s; }
 .d4 { animation-delay: 0.4s; }
 .d5 { animation-delay: 0.5s; }
+
+/* ══ STICKY TOOLBAR ══ */
+.sticky-toolbar {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 900;
+}
+
+.toolbar-btn {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.toolbar-btn:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(0,0,0,0.25); }
+
+.toolbar-btn.checklist-btn { background: var(--ink); color: var(--bg); }
+.toolbar-btn.metro-btn     { background: var(--red); color: #fff; }
+
+/* ══ MODAL BASE ══ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20,14,10,0.55);
+  backdrop-filter: blur(4px);
+  z-index: 950;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-sheet {
+  background: var(--surface);
+  border-radius: 16px 16px 0 0;
+  width: 100%;
+  max-width: 560px;
+  padding: 0 0 32px;
+  transform: translateY(40px);
+  transition: transform 0.3s cubic-bezier(.22,1,.36,1);
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.modal-overlay.open .modal-sheet {
+  transform: translateY(0);
+}
+
+.modal-drag {
+  width: 40px;
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  margin: 12px auto 0;
+}
+
+.modal-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1.5px solid var(--border);
+}
+
+.modal-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+.modal-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 1px;
+}
+
+.modal-close {
+  background: var(--surface2);
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink2);
+  transition: background 0.15s;
+}
+.modal-close:hover { background: var(--border); }
+
+/* ══ CHECKLIST ══ */
+.cl-body { padding: 16px 20px; }
+
+.cl-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--surface2);
+  cursor: pointer;
+  user-select: none;
+  transition: opacity 0.2s;
+}
+.cl-item:last-child { border-bottom: none; }
+
+.cl-box {
+  width: 26px;
+  height: 26px;
+  border: 2px solid var(--border);
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 14px;
+  color: transparent;
+}
+
+.cl-item.checked .cl-box {
+  background: var(--green);
+  border-color: var(--green);
+  color: #fff;
+}
+
+.cl-item.checked .cl-text {
+  color: var(--ink3);
+  text-decoration: line-through;
+}
+
+.cl-text {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.4;
+  transition: color 0.2s;
+}
+
+.cl-progress {
+  margin: 12px 20px 0;
+  height: 5px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.cl-progress-bar {
+  height: 100%;
+  background: var(--green);
+  border-radius: 3px;
+  transition: width 0.4s cubic-bezier(.22,1,.36,1);
+}
+
+.cl-summary {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--ink3);
+  padding: 6px 20px 0;
+  letter-spacing: 1px;
+}
+
+.cl-reset {
+  display: block;
+  margin: 16px 20px 0;
+  padding: 10px;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--ink3);
+  cursor: pointer;
+  text-align: center;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 1px;
+  transition: background 0.15s;
+}
+.cl-reset:hover { background: var(--border); }
+
+/* ══ METRONOME ══ */
+.metro-body { padding: 20px; }
+
+.metro-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.metro-beat-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.metro-dot {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--border);
+  transition: background 0.05s, transform 0.05s;
+}
+
+.metro-dot.active {
+  background: var(--red);
+  transform: scale(1.4);
+}
+
+.metro-dot.beat5 { background: var(--border); }
+.metro-dot.beat5.active { background: var(--gold); transform: scale(1.6); }
+
+.metro-count {
+  font-family: 'DM Mono', monospace;
+  font-size: 48px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1;
+  min-width: 2ch;
+  text-align: center;
+  transition: color 0.05s;
+}
+
+.metro-count.accent { color: var(--gold); }
+
+.metro-label {
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  font-family: 'DM Mono', monospace;
+}
+
+.metro-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--ink3);
+}
+
+.metro-controls {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.metro-start {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: 'Noto Sans TC', sans-serif;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.5px;
+}
+
+.metro-start.start-state {
+  background: var(--ink);
+  color: var(--bg);
+}
+
+.metro-start.stop-state {
+  background: var(--red);
+  color: #fff;
+}
+
+.metro-hint {
+  text-align: center;
+  font-size: 11px;
+  color: var(--ink3);
+  margin-top: 14px;
+  line-height: 1.6;
+  letter-spacing: 0.3px;
+}
+
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(192,57,43,0.5); }
+  70%  { box-shadow: 0 0 0 10px rgba(192,57,43,0); }
+  100% { box-shadow: 0 0 0 0 rgba(192,57,43,0); }
+}
+
+.metro-start.stop-state { animation: pulse 1s infinite; }
 </style>
 </head>
 <body>
@@ -1254,9 +1558,208 @@ h1 em {
 
 </div>
 
+<!-- ══ STICKY TOOLBAR ══ -->
+<div class="sticky-toolbar">
+  <button class="toolbar-btn checklist-btn" onclick="openChecklist()" title="今日打卡">✅</button>
+  <button class="toolbar-btn metro-btn" onclick="openMetro()" title="節拍器">🥁</button>
+</div>
+
+<!-- ══ CHECKLIST MODAL ══ -->
+<div class="modal-overlay" id="clOverlay" onclick="closeOnOverlay(event,'clOverlay')">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head">
+      <div>
+        <div class="modal-title">今日訓練打卡</div>
+        <div class="modal-date" id="clDate"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('clOverlay')">✕</button>
+    </div>
+    <div class="cl-progress"><div class="cl-progress-bar" id="clBar" style="width:0%"></div></div>
+    <div class="cl-summary" id="clSummary">0 / 5 完成</div>
+    <div class="cl-body" id="clBody"></div>
+    <button class="cl-reset" onclick="resetChecklist()">重置今日打卡</button>
+  </div>
+</div>
+
+<!-- ══ METRONOME MODAL ══ -->
+<div class="modal-overlay" id="metroOverlay" onclick="closeOnOverlay(event,'metroOverlay')">
+  <div class="modal-sheet">
+    <div class="modal-drag"></div>
+    <div class="modal-head">
+      <div class="modal-title">節拍器</div>
+      <button class="modal-close" onclick="stopMetro();closeModal('metroOverlay')">✕</button>
+    </div>
+    <div class="metro-body">
+      <div class="metro-display">
+        <div class="metro-beat-row" id="metroDots"></div>
+        <div class="metro-count" id="metroCount">—</div>
+        <div class="metro-label">每拍 1 秒 · 第 5 拍重音</div>
+        <div class="metro-total" id="metroTotal">總拍數：0</div>
+      </div>
+      <div class="metro-controls">
+        <button class="metro-start start-state" id="metroBtn" onclick="toggleMetro()">▶ 開始</button>
+      </div>
+      <div class="metro-hint">第 1–4 拍：低音嗶 · 第 5 拍：高音嗶<br/>按「停止」或關閉視窗即可暫停</div>
+    </div>
+  </div>
+</div>
+
 <script>
-function toggleCheck(el) {
-  el.classList.toggle('done');
+// ══ CHECKLIST ══
+const CL_ITEMS = [
+  { id:'warmup',  text:'✅ 完成暖身（手腕＋肩＋臀）' },
+  { id:'train',   text:'💪 完成今日重訓課表' },
+  { id:'cardio',  text:'🚶 完成收尾有氧 10 分鐘' },
+  { id:'protein', text:'🥚 補充蛋白質（訓練後 30 分內）' },
+  { id:'water',   text:'💧 今天喝水 ≥ 2,000 ml' },
+];
+
+function getTodayKey() {
+  const d = new Date();
+  return `cl_${d.getFullYear()}_${d.getMonth()+1}_${d.getDate()}`;
+}
+
+function loadChecklist() {
+  try { return JSON.parse(localStorage.getItem(getTodayKey()) || '{}'); } catch(e){ return {}; }
+}
+
+function saveChecklist(state) {
+  try { localStorage.setItem(getTodayKey(), JSON.stringify(state)); } catch(e){}
+}
+
+function renderChecklist() {
+  const state = loadChecklist();
+  const body  = document.getElementById('clBody');
+  body.innerHTML = '';
+  CL_ITEMS.forEach(item => {
+    const done = !!state[item.id];
+    const li = document.createElement('div');
+    li.className = 'cl-item' + (done ? ' checked' : '');
+    li.innerHTML = `<div class="cl-box">${done ? '✓' : ''}</div><div class="cl-text">${item.text}</div>`;
+    li.onclick = () => {
+      const s = loadChecklist();
+      s[item.id] = !s[item.id];
+      saveChecklist(s);
+      renderChecklist();
+    };
+    body.appendChild(li);
+  });
+  const count = CL_ITEMS.filter(i => !!state[i.id]).length;
+  const pct   = Math.round(count / CL_ITEMS.length * 100);
+  document.getElementById('clBar').style.width = pct + '%';
+  document.getElementById('clSummary').textContent = `${count} / ${CL_ITEMS.length} 完成`;
+}
+
+function resetChecklist() {
+  try { localStorage.removeItem(getTodayKey()); } catch(e){}
+  renderChecklist();
+}
+
+function openChecklist() {
+  const d   = new Date();
+  const wds = ['日','一','二','三','四','五','六'];
+  document.getElementById('clDate').textContent =
+    `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} 週${wds[d.getDay()]}`;
+  renderChecklist();
+  document.getElementById('clOverlay').classList.add('open');
+}
+
+// ══ METRONOME ══
+let metroCtx    = null;
+let metroTimer  = null;
+let metroBeat   = 0;
+let metroTotal  = 0;
+let metroRunning = false;
+
+function getAudioCtx() {
+  if (!metroCtx) metroCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return metroCtx;
+}
+
+function beep(isAccent) {
+  const ctx  = getAudioCtx();
+  const osc  = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.type      = 'sine';
+  osc.frequency.value = isAccent ? 880 : 440;
+  gain.gain.setValueAtTime(0.5, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+  osc.start(ctx.currentTime);
+  osc.stop(ctx.currentTime + 0.14);
+}
+
+function buildDots() {
+  const row = document.getElementById('metroDots');
+  row.innerHTML = '';
+  for(let i = 1; i <= 5; i++){
+    const d = document.createElement('div');
+    d.className = 'metro-dot' + (i === 5 ? ' beat5' : '');
+    d.id = 'dot' + i;
+    row.appendChild(d);
+  }
+}
+
+function updateDots(beat) {
+  for(let i = 1; i <= 5; i++){
+    document.getElementById('dot'+i).classList.toggle('active', i === beat);
+  }
+}
+
+function tick() {
+  metroBeat++;
+  if (metroBeat > 5) metroBeat = 1;
+  metroTotal++;
+  const isAccent = metroBeat === 5;
+  beep(isAccent);
+  const countEl = document.getElementById('metroCount');
+  countEl.textContent = metroBeat;
+  countEl.className   = 'metro-count' + (isAccent ? ' accent' : '');
+  updateDots(metroBeat);
+  document.getElementById('metroTotal').textContent = '總拍數：' + metroTotal;
+}
+
+function startMetro() {
+  if (metroRunning) return;
+  metroRunning = true;
+  metroBeat  = 0;
+  document.getElementById('metroBtn').textContent = '■ 停止';
+  document.getElementById('metroBtn').className   = 'metro-start stop-state';
+  tick();
+  metroTimer = setInterval(tick, 1000);
+}
+
+function stopMetro() {
+  if (!metroRunning) return;
+  metroRunning = false;
+  clearInterval(metroTimer);
+  metroTimer = null;
+  updateDots(0);
+  document.getElementById('metroCount').textContent = '—';
+  document.getElementById('metroCount').className   = 'metro-count';
+  document.getElementById('metroBtn').textContent   = '▶ 開始';
+  document.getElementById('metroBtn').className     = 'metro-start start-state';
+}
+
+function toggleMetro() {
+  metroRunning ? stopMetro() : startMetro();
+}
+
+function openMetro() {
+  buildDots();
+  document.getElementById('metroOverlay').classList.add('open');
+}
+
+// ══ MODAL HELPERS ══
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  if (id === 'metroOverlay') stopMetro();
+}
+
+function closeOnOverlay(e, id) {
+  if (e.target.id === id) closeModal(id);
 }
 </script>
 </body>
