@@ -769,6 +769,15 @@ h1 em{font-style:normal;color:var(--red);border-bottom:4px solid var(--red);}
         <!-- Save -->
         <button class="save-log-btn" onclick="saveFullLog()">💾 儲存今日訓練紀錄</button>
         <div class="save-confirm" id="saveConfirm"></div>
+        <button class="gpt-report-btn" onclick="generateGPTReport()">🤖 產生今日報告（貼給 GPT）</button>
+        <div class="gpt-report-box" id="gptReportBox" style="display:none;">
+          <div class="gpt-report-header">
+            <span class="gpt-report-label">📋 今日報告已產生</span>
+            <button class="gpt-copy-btn" id="gptCopyBtn" onclick="copyGPTReport()">複製全文</button>
+          </div>
+          <div class="gpt-report-hint">複製後貼到 ChatGPT 或任何 AI 對話框即可獲得建議 👆</div>
+          <pre class="gpt-report-text" id="gptReportText"></pre>
+        </div>
 
         <!-- History -->
         <div class="cl-sec" style="margin-top:20px;">最近訓練紀錄</div>
@@ -1117,6 +1126,83 @@ h1 em{font-style:normal;color:var(--red);border-bottom:4px solid var(--red);}
 .wt-status-chip.good { background: #e8f5ed; color: var(--green); }
 .wt-status-chip.warn { background: #fff3e0; color: var(--orange); }
 .wt-status-chip.bad  { background: #fde8e6; color: var(--red); }
+
+/* GPT REPORT */
+.gpt-report-btn {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'Noto Sans TC', sans-serif;
+  transition: background 0.15s;
+  letter-spacing: 0.3px;
+}
+.gpt-report-btn:hover { background: #1557b0; }
+
+.gpt-report-box {
+  margin-top: 12px;
+  border: 1.5px solid #1a73e8;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.gpt-report-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: #e8f0fe;
+  border-bottom: 1px solid #c5d8fc;
+}
+.gpt-report-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a73e8;
+}
+.gpt-copy-btn {
+  background: #1a73e8;
+  color: #fff;
+  border: none;
+  padding: 6px 14px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+.gpt-copy-btn:hover { background: #1557b0; }
+.gpt-copy-btn.copied { background: var(--green); }
+
+.gpt-report-hint {
+  font-size: 11px;
+  color: #1a73e8;
+  padding: 6px 14px;
+  background: #e8f0fe;
+  border-bottom: 1px solid #c5d8fc;
+}
+.gpt-report-text {
+  font-family: 'DM Mono', monospace;
+  font-size: 11.5px;
+  line-height: 1.8;
+  color: var(--ink2);
+  padding: 14px;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 320px;
+  overflow-y: auto;
+  background: var(--surface);
+  scrollbar-width: thin;
+  scrollbar-color: #1a73e8 transparent;
+  margin: 0;
+}
 </style>
 
 <script>
@@ -1765,6 +1851,126 @@ function syncMetroUI(){
 }
 
 window.addEventListener('beforeunload',()=>stopMetro());
+
+// ═══════════════════════════════════════
+// GPT REPORT GENERATOR
+// ═══════════════════════════════════════
+function generateGPTReport(){
+  const d = new Date();
+  const wds = ['日','一','二','三','四','五','六'];
+  const dateStr = `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getDate()).padStart(2,'0')} 週${wds[d.getDay()]}`;
+
+  // Health
+  const health = ld('health_'+todayStr(), {wrist:0, knee:0, gerd:'none'});
+  const gerdMap = {none:'無', mild:'輕微', bad:'明顯'};
+
+  // Exercises
+  const day = logDay || (ld('cl_'+todayStr(),{})).selectedDay || null;
+  let exLines = '（今日未選擇訓練日）';
+  let dayLabel = '';
+  let suggestLines = [];
+
+  if(day && DAYS[day]){
+    dayLabel = `Day ${day}`;
+    const exArr = DAYS[day].map(ex => {
+      const kg  = document.getElementById('log_kg_'+ex.id)?.value || ex.defaultKg;
+      const sets= document.getElementById('log_sets_'+ex.id)?.value || ex.defaultSets;
+      const reps= document.getElementById('log_reps_'+ex.id)?.value || ex.defaultReps;
+      const rpe = document.getElementById('log_rpe_'+ex.id)?.value || 7;
+      const note= document.getElementById('log_note_'+ex.id)?.value || '';
+      const kgLabel = parseFloat(kg)>0 ? `${kg}kg` : '徒手';
+      // check upweight suggestion
+      const suggest = checkSuggestUpweight(ex.id, ex.targetReps);
+      if(suggest) suggestLines.push(`  ・${ex.name} → 建議下次嘗試 ${suggest}kg`);
+      return `  ・${ex.name}｜${kgLabel} × ${sets}組 × ${reps}下｜RPE ${rpe}${note?'｜備註：'+note:''}`;
+    });
+    exLines = exArr.join('\n');
+  }
+
+  // Diet
+  const diet = ld('diet_'+todayStr(), {});
+  const dietLines = [
+    `  ・蛋白質達標：${diet.d_protein ? '✅ 是' : '❌ 否'}`,
+    `  ・啤酒：${diet.d_beer ? '⚠️ 有喝' : '無'}`,
+    `  ・鹹酥雞：${diet.d_chicken ? '⚠️ 有吃' : '無'}`,
+    `  ・餅乾：${diet.d_cookie ? '⚠️ 有吃' : '無'}`,
+    `  ・晚上失控：${diet.d_lateeat ? '⚠️ 有' : '無'}`,
+  ].join('\n');
+
+  // Weight
+  const wtH = ld('wt_history', {});
+  const todayWt = wtH[todayStr()];
+  const wtKeys = Object.keys(wtH).sort().slice(-7);
+  let wtLine = todayWt ? `今日體重：${todayWt} kg` : '今日未記錄體重';
+  if(wtKeys.length >= 2){
+    const oldest = wtH[wtKeys[0]];
+    const newest = wtH[wtKeys[wtKeys.length-1]];
+    const diff = Math.round((newest - oldest)*10)/10;
+    wtLine += `\n  ・近 ${wtKeys.length} 天趨勢：${diff>0?'+':''}${diff} kg`;
+  }
+
+  // Upweight suggestions
+  const suggestBlock = suggestLines.length > 0
+    ? `\n💪 系統建議加重\n${suggestLines.join('\n')}\n`
+    : '';
+
+  // Streak
+  const streak = calcStreak();
+
+  // Assemble
+  const report =
+`【今日訓練報告】${dateStr}
+🔥 連續訓練：${streak} 天
+${'─'.repeat(36)}
+📊 身體狀況
+  ・左手腕痛感：${health.wrist}/10${health.wrist>=6?' ⚠️ 偏高':''}
+  ・膝蓋痛感：${health.knee}/10${health.knee>=6?' ⚠️ 偏高':''}
+  ・胃食道逆流：${gerdMap[health.gerd]||'無'}
+${'─'.repeat(36)}
+🏋️ 今日訓練：${dayLabel||'未選擇'}
+${exLines}
+${'─'.repeat(36)}
+🥗 飲食狀況
+${dietLines}
+${'─'.repeat(36)}
+⚖️ 體重紀錄
+  ・${wtLine}
+${'─'.repeat(36)}${suggestBlock ? '\n'+suggestBlock+'─'.repeat(36) : ''}
+
+📌 請根據以上資料：
+1. 評估今日訓練品質與身體恢復狀況
+2. 特別注意手腕（${health.wrist}/10）與膝蓋（${health.knee}/10）情況
+3. 建議下次${dayLabel||'訓練'}的調整方向（重量／組數／動作）
+4. 飲食方面有無需要調整
+5. 給我一句今天最重要的提醒
+
+背景：33歲男性，170cm/80kg，增肌減脂目標，居家訓練，晚上22:00訓練，左手腕與左肩需保護，目標體態：肩寬、上胸厚、腰變小。`;
+
+  document.getElementById('gptReportText').textContent = report;
+  document.getElementById('gptReportBox').style.display = 'block';
+  // scroll into view
+  setTimeout(()=>document.getElementById('gptReportBox').scrollIntoView({behavior:'smooth', block:'nearest'}), 100);
+}
+
+function copyGPTReport(){
+  const text = document.getElementById('gptReportText').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn = document.getElementById('gptCopyBtn');
+    btn.textContent = '已複製 ✓';
+    btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='複製全文'; btn.classList.remove('copied'); }, 2500);
+  }).catch(()=>{
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    const btn = document.getElementById('gptCopyBtn');
+    btn.textContent = '已複製 ✓'; btn.classList.add('copied');
+    setTimeout(()=>{ btn.textContent='複製全文'; btn.classList.remove('copied'); }, 2500);
+  });
+}
 
 // ═══════════════════════════════════════
 // INIT
